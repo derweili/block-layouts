@@ -2,24 +2,24 @@
 /**
  * Main plugin file
  *
- * @package     Adv_Gutenberg_Courses\Example_Blocks
+ * @package     Derweili\Content_Templates
  * @author      Zac Gordon (@zgordon)
  * @license     GPL2+
  *
  * @wordpress-plugin
- * Plugin Name: Gutenberg - Advanced Examples
- * Plugin URI:  https://javascriptforwp.com/
- * Description: A plugin containing advanced examples for developers.  From <a href="https://javascriptforwp.com/product/advanced-gutenberg-development/">Zac Gordon's Advanced Gutenberg Development Course</a>.
+ * Plugin Name: Content Templates
+ * Plugin URI:  https://derweili.de
+ * Description: Content Templates for WordPress
  * Version:     1.0.0
- * Author:      Zac Gordon
- * Author URI:  https://twitter.com/zgordon
- * Text Domain: jsforwpadvblocks
+ * Author:      Derweili
+ * Author URI:  https://derweili.de
+ * Text Domain: content-templates
  * Domain Path: /languages
  * License:     GPL2+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace Adv_Gutenberg_Courses\Example_Blocks;
+namespace Derweili\Content_Templates;
 
 //  Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -57,12 +57,17 @@ function _get_plugin_url() {
 }
 
 
-
 // Enqueue JS and CSS
 include __DIR__ . '/lib/register-scripts.php';
 
-// Register block server side
-include __DIR__ . '/lib/register-blocks.php';
+// Register Post Type
+include __DIR__ . '/lib/register-post-type.php';
+
+// Register Ajax Callback
+include __DIR__ . '/lib/register-ajax.php';
 
 // Register block server side
-include __DIR__ . '/lib/block-categories.php';
+// include __DIR__ . '/lib/register-blocks.php';
+
+// Register block server side
+// include __DIR__ . '/lib/block-categories.php';

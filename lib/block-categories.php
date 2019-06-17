@@ -1,6 +1,6 @@
 <?php
 
-namespace Adv_Gutenberg_Courses\Example_Blocks;
+namespace Derweili\Content_Templates;
 
 
 add_filter( 'block_categories', function( $categories, $post ) {

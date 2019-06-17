@@ -1,8 +1,10 @@
 <?php
 
-namespace Adv_Gutenberg_Courses\Example_Blocks;
+namespace Derweili\Content_Templates;
 
-add_action( 'init', __NAMESPACE__ . '\register_block_assets' );
+$js_dependencies = [ 'wp-plugins', 'wp-element', 'wp-edit-post', 'wp-i18n', 'wp-api-request', 'wp-data', 'wp-components', 'wp-blocks', 'wp-editor', 'wp-compose' ];
+
+// add_action( 'init', __NAMESPACE__ . '\register_block_assets' );
 /**
  * Enqueue block editor only JavaScript and CSS.
  */
@@ -17,7 +19,7 @@ function register_block_assets() {
 	wp_register_script(
 		'jsforwp-adv-gb-editor-js',
 		_get_plugin_url() . $editor_js_path,
-		[ 'wp-plugins', 'wp-element', 'wp-edit-post', 'wp-i18n', 'wp-api-request', 'wp-data', 'wp-components', 'wp-blocks', 'wp-editor', 'wp-compose' ],
+		$js_dependencies,
 		filemtime( _get_plugin_directory() . $editor_js_path ),
 		true
 	);	
@@ -40,3 +42,42 @@ function register_block_assets() {
 
 }
 
+
+// add_action("wp_enqueue_scripts", __NAMESPACE__ . '\frontend_assets' );
+/**
+ * Enqueue block frontend JS & CSS
+ */
+
+function frontend_assets(){
+
+	$frontend_js_path = "/assets/js/blocks.frontend.js";
+
+	wp_enqueue_script(
+		"jsforwp-adv-gb-frontend-js",
+		_get_plugin_url() . $frontend_js_path,
+		['wp-element'],
+		filemtime( _get_plugin_directory() . $frontend_js_path ),
+		true
+	);
+
+}
+
+/**
+ * Enqueue block frontend JS & CSS
+ */
+
+error_log('register script file');
+function plugin_assets(){
+	$plugin_js_path = "/assets/js/plugins.editor.js";
+	error_log('plugin assets' . _get_plugin_url() . $plugin_js_path );
+	wp_enqueue_script(
+		"derweilicontenttemplates-plugin-js",
+		_get_plugin_url() . $plugin_js_path,
+		$js_dependencies,
+		filemtime( _get_plugin_directory() . $plugin_js_path ),
+		true
+	);
+
+}
+
+add_action("enqueue_block_editor_assets", __NAMESPACE__ . '\plugin_assets' );

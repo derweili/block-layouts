@@ -1,6 +1,6 @@
 <?php
 
-namespace Adv_Gutenberg_Courses\Example_Blocks;
+namespace Derweili\Content_Templates;
 
 add_action( 'init', __NAMESPACE__ . '\register_blocks', 40 );
 /**
@@ -14,7 +14,7 @@ function register_blocks() {
 	}
 
     // List all of the blocks for your plugin
-    $blocks = [];
+    $blocks = ["jsforwpadvblocks/gallery", "jsforwpadvblocks/data-example"];
 
     // Register each block with same CSS and JS
     foreach( $blocks as $block ) {

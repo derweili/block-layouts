@@ -1,6 +1,6 @@
 const { __ } = wp.i18n;
 const { Fragment } = wp.element;
-const { PanelBody, PanelRow, Button } = wp.components;
+const { PanelBody, PanelRow, Button, Modal } = wp.components;
 const { registerPlugin } = wp.plugins;
 const { PluginSidebar, PluginSidebarMoreMenuItem } = wp.editPost;
 const { parse } = wp.blockSerializationDefaultParser;
@@ -8,17 +8,27 @@ const { select, dispatch} = wp.data;
 const apiRequest = wp.apiRequest;
 const ajax= wp.ajax;
 
-const {createBlock} = wp.blocks;
+const {createBlock, rawHandler} = wp.blocks;
 
-// 
 
-class PluginSidebarDemo extends React.Component {
-// const PluginSidebarDemo = props => {
+
+import "./plugin.scss";
+
+/**
+ * 
+ */
+
+class ContentTemplatesSidebar extends React.Component {
 
     state = {
-        templates : []
+        templates : [], // available templates
+        selectedTemplate: null, // currently selected template
+        isOpen: false // is modal open
     };
 
+    /**
+     * Load Available Templates
+     */
     componentDidMount(){
 
         apiRequest( { path: '/wp/v2/content-template' } ).then( posts => {
@@ -28,6 +38,11 @@ class PluginSidebarDemo extends React.Component {
 
     }
 
+    /**
+     * Receive Templates from REST API
+     * 
+     * @param {array} posts Content Template Posts (REST)
+     */
     onNewPosts( posts ){
 
         const templates = posts.map( post => {
@@ -35,7 +50,8 @@ class PluginSidebarDemo extends React.Component {
             return {
                 id: post.id,
                 title: post.title.rendered,
-                content: post.plain_content
+                content: post.plain_content,
+                icon: post.icon
             }
 
         })
@@ -48,10 +64,37 @@ class PluginSidebarDemo extends React.Component {
     onReloadEditor(){
     }
 
-    onSelectTemplate( template ){
+    /**
+     * Select Tempalte and Overwrite Content (Old Ajax Way)
+     */
+    onSelectTemplateAjax( template ){
 
+        // Get Post ID of current post
         const currentPostId = select('core/editor').getCurrentPostId();
+        const isNewPost = select('core/editor').isCleanNewPost();
 
+        /**
+         * Check if we are on an new Post and Display warning
+         * 
+         * The Content Templates currently work for saved posts only
+         */
+        if(isNewPost){
+            wp.data.dispatch('core/notices').createNotice(
+                'warning', // Can be one of: success, info, warning, error.
+                __("Please save the post, before selecting a template", "content-templates"), // Text string to display.
+                {
+                    isDismissible: true, // Whether the user can dismiss the notice.
+                    // Any actions the user can perform.
+                    actions: [
+
+                    ]
+                }
+            );
+
+            return;
+        }
+
+        // do ajax call
         fetch(wp.ajax.settings.url, {
             method: 'POST',
             headers: {
@@ -61,51 +104,128 @@ class PluginSidebarDemo extends React.Component {
         })
         .then(response => response.json())
         .then((response) => {
-            console.log(response);
+
+            /**
+             * Reload on Success or show error as notice
+             */
             if(response.success){
                 location.reload();
+                
             }else{
-                alert(response.error)
-            }
-            // msg = res.json().msg;
-        });
+                wp.data.dispatch('core/notices').createNotice(
+                    'error', // Can be one of: success, info, warning, error.
+                    response.error, // Text string to display.
+                    {
+                        isDismissible: true, // Whether the user can dismiss the notice.
+                        // Any actions the user can perform.
+                        actions: [
+                            // {
+                            //     url: '#',
+                            //     label: 'View post'
+                            // }
+                        ]
+                    }
+                );
+
+            }        });
  
 
     }
 
+    /**
+     * Overwrite Blocks on Template Select
+     * 
+     * @param {*} template Selected Template
+     * @param {*} force Skip user consent modal
+     */
+    onSelectTemplate( template, force = false){
+        // const newBlockTemplate = parse(template.content);
+        // console.log('newBlockTemplate', newBlockTemplate);
+
+        const isNewPost = select("core/editor").isCleanNewPost();
+
+        // show warning if 
+        if (force || isNewPost){
+
+            // get an array of gutenberg blocks from raw HTML (parse blocks)
+            var gutblock = wp.blocks.rawHandler({ 
+                HTML:  template.content,
+            });
+
+            // re-serialize blocks
+            // var serelized = wp.blocks.serialize(gutblock);
+            // serelized = serelized;
+
+            // delete all Blocks
+            dispatch("core/editor").resetBlocks([]);
+
+            // insert new Blocks
+            dispatch("core/editor").insertBlocks(gutblock, 0);
+
+            // close Modal and reset selected Template
+            this.setState({isOpen:false, selectedTemplate: null})
+
+        }else{
+            this.setState({
+                isOpen: true,
+                selectedTemplate: template
+            });
+        }
+    }
+
+    /**
+     * Close the user consent modal
+     */
+    closeModal(){
+        this.setState({isOpen:false, selectedTemplate: null})
+    }
+
     render(){
 
-        const { templates } = this.state;
+        const { templates, isOpen } = this.state;
 
         return (
             <Fragment>
-                <PluginSidebarMoreMenuItem target="jsforwpadvgb-demo">
+                <PluginSidebarMoreMenuItem target="content-templates-sidebar">
                     {__("Content Templates", "jsforwpadvblocks")}
                 </PluginSidebarMoreMenuItem>
                 <PluginSidebar
-                    name="jsforwpadvgb-demo"
+                    name="content-templates-sidebar"
                     title={__("Content Templates", "jsforwpadvblocks")}
                 >
-                    <PanelBody title={__("Content Templates", "jsforwpadvblocks")} opened>
-                    <PanelRow>
-                        <ul>
-                            {
-                                templates.map(template => {
-                                    return (
-                                        <li key={template.id}>
-                                            <Button isDefault onClick={ () => { this.onSelectTemplate(template) } }>
-                                                {template.title}
-                                            </Button>
-                                        </li>           
-                                    );
-                                })
-                            }
-                        </ul>
-
-
-                    </PanelRow>
-                    </PanelBody>
+                    <PanelBody title={__("Select a Template", "jsforwpadvblocks")} opened>
+                        <PanelRow>
+                            <ul className="content-template-button-list">
+                                {
+                                    templates.map(template => {
+                                        return (
+                                            <li key={template.id}>
+                                                <Button isDefault onClick={ () => { this.onSelectTemplate(template) } } className="template-button">
+                                                    <img src={template.icon}  width="40"/>
+                                                    {template.title}
+                                                </Button>
+                                            </li>           
+                                        );
+                                    })
+                                }
+                            </ul>
+                        </PanelRow>
+                        </PanelBody>
                 </PluginSidebar>
+                {
+                    isOpen && (
+                        <Modal
+                            title="Overwrite Content"
+                            onRequestClose={ () => this.closeModal() }>
+                            <p>
+                                Do you want to overwrite all Existing Content?
+                            </p>
+                            <Button isPrimary onClick={ () => { this.onSelectTemplate( this.state.selectedTemplate, true ) } } >
+                                Overwrite Content
+                            </Button>
+                        </Modal>
+                    )
+                }
             </Fragment>
         )
     }
@@ -113,5 +233,5 @@ class PluginSidebarDemo extends React.Component {
 
 registerPlugin( "contenttemplates-sidebar", {
     icon: "layout",
-    render: PluginSidebarDemo
+    render: ContentTemplatesSidebar
 })

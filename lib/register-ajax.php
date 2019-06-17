@@ -4,15 +4,30 @@ namespace Derweili\Content_Templates;
 add_action( 'wp_ajax_copy_from_template', __NAMESPACE__ . '\register_ajax', 40 );
 add_action( 'wp_ajax_nopriv_copy_from_template', __NAMESPACE__ . '\register_ajax', 40 );
 
+/**
+ * Handle Template Copy
+ */
 function register_ajax() {
-    // error_log('ajax');
 
-    // $template = intval( $_POST['template'] );
-
-    $currentPostId = intval( $_POST['post'] );
-    $templateId = intval( $_POST['template'] );
-
+    /**
+     * Get Data from Post
+     */
+    $currentPostId = intval( $_POST['post'] ); // ID of current post
+    $templateId = intval( $_POST['template'] ); // ID of template
     $post = get_post($templateId);
+
+    // check if current user can edit this post
+    if( ! current_user_can( get_post_type_object($post->post_type)->cap->edit_post, $currentPostId ) ){
+        echo json_encode(array(
+            'success' => false,
+            'template' => 'You are not allowed to edit this post'
+        ));
+        die();
+    }
+
+
+    current_user_can( $capability , $object_id );
+
     setup_postdata($post);
 
     $templateContent = get_the_content();

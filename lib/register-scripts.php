@@ -53,7 +53,7 @@ function frontend_assets(){
 	$frontend_js_path = "/assets/js/blocks.frontend.js";
 
 	wp_enqueue_script(
-		"jsforwp-adv-gb-frontend-js",
+		"jsforwp-adv-gb-frontnd-js",
 		_get_plugin_url() . $frontend_js_path,
 		['wp-element'],
 		filemtime( _get_plugin_directory() . $frontend_js_path ),
@@ -70,12 +70,21 @@ error_log('register script file');
 function plugin_assets(){
 	$plugin_js_path = "/assets/js/plugins.editor.js";
 	error_log('plugin assets' . _get_plugin_url() . $plugin_js_path );
+	
 	wp_enqueue_script(
 		"derweilicontenttemplates-plugin-js",
 		_get_plugin_url() . $plugin_js_path,
 		$js_dependencies,
 		filemtime( _get_plugin_directory() . $plugin_js_path ),
 		true
+	);
+	
+	$plugin_css_path = "/assets/css/plugins.editor.css";
+	wp_enqueue_style(
+		"derweilicontenttemplates-plugin-css",
+		_get_plugin_url() . $plugin_css_path,
+		[],
+		filemtime( _get_plugin_directory() . $plugin_css_path )
 	);
 
 }

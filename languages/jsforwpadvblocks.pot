@@ -81,6 +81,14 @@ msgstr ""
 msgid "Demo for select, subscribe, dispatch, withSelect, withDispatch and compose"
 msgstr ""
 
-#: plugins/01-content-templates-sidebar/index.js:89
+#: plugins/01-content-templates-sidebar/index.js:194
 msgid "Content Templates"
+msgstr ""
+
+#: plugins/01-content-templates-sidebar/index.js:196
+msgid "Select a Template"
+msgstr ""
+
+#: plugins/01-content-templates-sidebar/index.js:84
+msgid "Please save the post, before selecting a template"
 msgstr ""

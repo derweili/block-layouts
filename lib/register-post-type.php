@@ -3,30 +3,47 @@
 namespace Derweili\Content_Templates;
 
 /**
- * Register the template
+ * Register Templates Post Type
  */
-
 class Templates {
 
+    /**
+     * Post Type name
+     */
     public static $post_type = 'content-template';
 
-
+    /**
+     * Register all Hooks
+     */
     function run(){
         add_action( 'init', array( $this, 'register_post_type' ) );
         add_action( 'rest_api_init', array( $this, 'add_plain_content_post_data' ) );
+        add_action( 'rest_api_init', array( $this, 'add_plain_icon_post_data' ) );
 
     }
 
+    /**
+     * Register Post Type
+     */
     function register_post_type() {
         $args = array(
-          'public' => true,
+          'public' => false,
+          'show_ui' => true,
           'label'  => __('Templates', 'content-templates'),
-          'show_in_rest' => true
+          'show_in_rest' => true,
+          'supports' => array(
+              'thumbnail',
+              'editor',
+              'title'
+          )
         );
         register_post_type( Templates::$post_type, $args );
     }
 
 
+    /**
+     * Add plain content (unfiltered) to REST API
+     */
     function add_plain_content_post_data() {
         register_rest_field(Templates::$post_type,
             'plain_content',
@@ -45,6 +62,30 @@ class Templates {
      
     function get_plain_content_field($post, $field_name, $request) {
       return $post["content"]["raw"];
+    }
+
+
+    /**
+     * Add Post Thumnail URL as Icon to REST API
+     */
+    function add_plain_icon_post_data() {
+        register_rest_field(Templates::$post_type,
+            'icon',
+            array(
+                'get_callback' => array($this, 'get_icon_field' ),
+                // 'update_callback' => 'slug_update_field',
+                'schema' => array(
+                    'description' => 'Icon URL',
+                    'type' => 'string',
+                    'context' => array('view')
+                )
+            )
+        );
+    }
+     
+     
+    function get_icon_field($post, $field_name, $request) {
+      return get_the_post_thumbnail_url( $post->ID, 'full');
     }
      
 

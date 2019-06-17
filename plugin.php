@@ -63,8 +63,6 @@ include __DIR__ . '/lib/register-scripts.php';
 // Register Post Type
 include __DIR__ . '/lib/register-post-type.php';
 
-// Register Ajax Callback
-include __DIR__ . '/lib/register-ajax.php';
 
 // Register block server side
 // include __DIR__ . '/lib/register-blocks.php';

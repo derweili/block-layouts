@@ -1842,68 +1842,6 @@ var ContentTemplatesSidebar = function (_React$Component) {
         value: function onReloadEditor() {}
 
         /**
-         * Select Tempalte and Overwrite Content (Old Ajax Way)
-         */
-
-    }, {
-        key: 'onSelectTemplateAjax',
-        value: function onSelectTemplateAjax(template) {
-
-            // Get Post ID of current post
-            var currentPostId = select('core/editor').getCurrentPostId();
-            var isNewPost = select('core/editor').isCleanNewPost();
-
-            /**
-             * Check if we are on an new Post and Display warning
-             * 
-             * The Content Templates currently work for saved posts only
-             */
-            if (isNewPost) {
-                wp.data.dispatch('core/notices').createNotice('warning', // Can be one of: success, info, warning, error.
-                __("Please save the post, before selecting a template", "content-templates"), // Text string to display.
-                {
-                    isDismissible: true, // Whether the user can dismiss the notice.
-                    // Any actions the user can perform.
-                    actions: []
-                });
-
-                return;
-            }
-
-            // do ajax call
-            fetch(wp.ajax.settings.url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-                },
-                body: 'action=copy_from_template&template=' + template.id + '&post=' + currentPostId
-            }).then(function (response) {
-                return response.json();
-            }).then(function (response) {
-
-                /**
-                 * Reload on Success or show error as notice
-                 */
-                if (response.success) {
-                    location.reload();
-                } else {
-                    wp.data.dispatch('core/notices').createNotice('error', // Can be one of: success, info, warning, error.
-                    response.error, // Text string to display.
-                    {
-                        isDismissible: true, // Whether the user can dismiss the notice.
-                        // Any actions the user can perform.
-                        actions: [
-                            // {
-                            //     url: '#',
-                            //     label: 'View post'
-                            // }
-                        ]
-                    });
-                }
-            });
-        }
-
-        /**
          * Overwrite Blocks on Template Select
          * 
          * @param {*} template Selected Template

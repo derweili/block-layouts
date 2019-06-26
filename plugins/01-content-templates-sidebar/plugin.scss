@@ -1,9 +1,11 @@
 .content-template-button-list{
     display: flex;
     flex-wrap: wrap;
+    width: 100%;
     li{
         width: 50%;
         padding: 0 5px;
+
     }
     .components-button.is-button{
         width: 100%;

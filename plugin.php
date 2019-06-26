@@ -56,6 +56,17 @@ function _get_plugin_url() {
 	return $plugin_url;
 }
 
+/**
+ * Load plugin textdomain.
+ *
+ * @since 1.0.0
+ */
+function load_textdomain() {
+	$return = load_plugin_textdomain( 'content-templates', false, basename( dirname( __FILE__ ) ) . '/languages' ); 
+}
+
+add_action( 'plugins_loaded', __NAMESPACE__ . '\load_textdomain' );
+
 
 // Enqueue JS and CSS
 include __DIR__ . '/lib/register-scripts.php';
@@ -63,9 +74,5 @@ include __DIR__ . '/lib/register-scripts.php';
 // Register Post Type
 include __DIR__ . '/lib/register-post-type.php';
 
-
-// Register block server side
-// include __DIR__ . '/lib/register-blocks.php';
-
-// Register block server side
-// include __DIR__ . '/lib/block-categories.php';
+// Add Meta Info to Plugin
+include __DIR__ . '/lib/meta.php';

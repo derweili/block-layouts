@@ -19,6 +19,7 @@ class Templates {
         add_action( 'init', array( $this, 'register_post_type' ) );
         add_action( 'rest_api_init', array( $this, 'add_plain_content_post_data' ) );
         add_action( 'rest_api_init', array( $this, 'add_plain_icon_post_data' ) );
+        add_action("enqueue_block_editor_assets", array( $this, 'gutenberg_data' ) );
 
     }
 
@@ -58,8 +59,8 @@ class Templates {
             )
         );
     }
-     
-     
+
+
     function get_plain_content_field($post, $field_name, $request) {
       return $post["content"]["raw"];
     }
@@ -82,12 +83,19 @@ class Templates {
             )
         );
     }
-     
-     
+
+
     function get_icon_field($post, $field_name, $request) {
       return get_the_post_thumbnail_url( $post->ID, 'full');
     }
-     
+
+    function gutenberg_data(){
+
+        $url = admin_url( 'edit.php?post_type=content-template' );
+        wp_localize_script( 'derweilicontenttemplates-plugin-js', 'templatesAdminLink', $url );
+
+    }
+
 
 }
 

@@ -8,6 +8,7 @@ const { select, dispatch} = wp.data;
 const apiRequest = wp.apiRequest;
 const ajax= wp.ajax;
 
+
 const {createBlock, rawHandler} = wp.blocks;
 
 
@@ -23,7 +24,8 @@ class ContentTemplatesSidebar extends React.Component {
     state = {
         templates : [], // available templates
         selectedTemplate: null, // currently selected template
-        isOpen: false // is modal open
+        isOpen: false, // is modal open
+        templateBlocksContent: '', // save content after Template Select here to check if content was not changed
     };
 
     /**
@@ -32,7 +34,6 @@ class ContentTemplatesSidebar extends React.Component {
     componentDidMount(){
 
         apiRequest( { path: '/wp/v2/content-template' } ).then( posts => {
-            console.log('posts', posts);
             this.onNewPosts( posts );
         } );
 
@@ -58,7 +59,6 @@ class ContentTemplatesSidebar extends React.Component {
 
         this.setState( {templates } );
 
-        console.log('new Posts', this.state.templates);
     }
 
     onReloadEditor(){
@@ -77,7 +77,7 @@ class ContentTemplatesSidebar extends React.Component {
         const isNewPost = select("core/editor").isCleanNewPost();
 
         // show warning if 
-        if (force || isNewPost){
+        if ( force || isNewPost || this.isUnchangedTemplate() ){
 
             // get an array of gutenberg blocks from raw HTML (parse blocks)
             var gutblock = wp.blocks.rawHandler({ 
@@ -96,6 +96,12 @@ class ContentTemplatesSidebar extends React.Component {
 
             // close Modal and reset selected Template
             this.setState({isOpen:false, selectedTemplate: null})
+            this.createTemplateSelectedNotice( template );
+
+            this.saveInsertedTemplate();
+
+
+
 
         }else{
             this.setState({
@@ -105,11 +111,52 @@ class ContentTemplatesSidebar extends React.Component {
         }
     }
 
+    saveInsertedTemplate(){
+        const blocks = select("core/editor").getBlocks();
+        const templateBlocksContent = JSON.stringify(blocks);
+        this.setState({templateBlocksContent});
+    }
+    
+    isUnchangedTemplate(){
+        const blocks = select("core/editor").getBlocks();
+        const templateBlocksContent = JSON.stringify(blocks);
+        
+        return templateBlocksContent === this.state.templateBlocksContent;
+        
+    }
+
+    createTemplateSelectedNotice( template ){
+        dispatch( 'core/notices' ).createNotice(
+            'info',
+            template.title + ' ' + __('Template selected', 'content-templates'),
+            {
+                isDismissible: true,
+                type: 'snackbar',
+            }
+        )
+    }
+
     /**
      * Close the user consent modal
      */
     closeModal(){
         this.setState({isOpen:false, selectedTemplate: null})
+    }
+
+    /**
+     * Render "No Templates Found" Message
+     * 
+     * The templatesAdminLink comes from wp_localize_script
+     * 
+     */
+    noTemplatesFound(){
+        return (
+            <Fragment>
+                <h2>{__("No Templates Found", "content-templates")}</h2>
+                <p>{__("You don't have any Templates", "content-templates")}</p>
+                <a href={templatesAdminLink}>{__("Please create a new Template first.", "content-templates")}</a>
+            </Fragment>
+        );
     }
 
     render(){
@@ -119,26 +166,28 @@ class ContentTemplatesSidebar extends React.Component {
         return (
             <Fragment>
                 <PluginSidebarMoreMenuItem target="content-templates-sidebar">
-                    {__("Content Templates", "jsforwpadvblocks")}
+                    {__("Content Templates", "content-templates")}
                 </PluginSidebarMoreMenuItem>
                 <PluginSidebar
                     name="content-templates-sidebar"
-                    title={__("Content Templates", "jsforwpadvblocks")}
+                    title={__("Content Templates", "content-templates")}
                 >
-                    <PanelBody title={__("Select a Template", "jsforwpadvblocks")} opened>
+                    <PanelBody title={__("Select a Template", "content-templates")} opened>
                         <PanelRow>
                             <ul className="content-template-button-list">
                                 {
-                                    templates.map(template => {
-                                        return (
-                                            <li key={template.id}>
-                                                <Button isDefault onClick={ () => { this.onSelectTemplate(template) } } className="template-button">
-                                                    <img src={template.icon}  width="40"/>
-                                                    {template.title}
-                                                </Button>
-                                            </li>           
-                                        );
-                                    })
+                                    templates.length > 0 ?
+                                        templates.map(template => {
+                                            return (
+                                                <li key={template.id}>
+                                                    <Button isDefault onClick={ () => { this.onSelectTemplate(template) } } className="template-button">
+                                                        <img src={template.icon}  width="40"/>
+                                                        {template.title}
+                                                    </Button>
+                                                </li>           
+                                            );
+                                        }) : this.noTemplatesFound()
+                                    
                                 }
                             </ul>
                         </PanelRow>

@@ -1,16 +1,16 @@
 <?php
 
-namespace Derweili\Content_Templates;
+namespace Derweili\Block_Layouts;
 
 /**
- * Register Templates Post Type
+ * Register Layouts Post Type
  */
-class Templates {
+class Layouts {
 
     /**
      * Post Type name
      */
-    public static $post_type = 'content-template';
+    public static $post_type = 'block-layout';
 
     /**
      * Register all Hooks
@@ -30,7 +30,7 @@ class Templates {
         $args = array(
           'public' => false,
           'show_ui' => true,
-          'label'  => __('Templates', 'content-templates'),
+          'label'  => __('Block Layouts', 'block-layouts'),
           'show_in_rest' => true,
           'supports' => array(
               'thumbnail',
@@ -38,7 +38,7 @@ class Templates {
               'title'
           )
         );
-        register_post_type( Templates::$post_type, $args );
+        register_post_type( Layouts::$post_type, $args );
     }
 
 
@@ -46,7 +46,7 @@ class Templates {
      * Add plain content (unfiltered) to REST API
      */
     function add_plain_content_post_data() {
-        register_rest_field(Templates::$post_type,
+        register_rest_field(Layouts::$post_type,
             'plain_content',
             array(
                 'get_callback' => array($this, 'get_plain_content_field' ),
@@ -70,7 +70,7 @@ class Templates {
      * Add Post Thumnail URL as Icon to REST API
      */
     function add_plain_icon_post_data() {
-        register_rest_field(Templates::$post_type,
+        register_rest_field(Layouts::$post_type,
             'icon',
             array(
                 'get_callback' => array($this, 'get_icon_field' ),
@@ -91,7 +91,7 @@ class Templates {
 
     function gutenberg_data(){
 
-        $url = admin_url( 'edit.php?post_type=content-template' );
+        $url = admin_url( 'edit.php?post_type=block-layout' );
         wp_localize_script( 'derweilicontenttemplates-plugin-js', 'templatesAdminLink', $url );
 
     }
@@ -99,5 +99,5 @@ class Templates {
 
 }
 
-$templates = new Templates();
+$templates = new Layouts();
 $templates->run();

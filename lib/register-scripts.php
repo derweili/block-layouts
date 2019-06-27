@@ -1,6 +1,6 @@
 <?php
 
-namespace Derweili\Content_Templates;
+namespace Derweili\Block_Layouts;
 
 $js_dependencies = [ 'wp-plugins', 'wp-element', 'wp-edit-post', 'wp-i18n', 'wp-api-request', 'wp-data', 'wp-components', 'wp-blocks', 'wp-editor', 'wp-compose' ];
 

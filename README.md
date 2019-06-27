@@ -1,12 +1,12 @@
-# Gutenberg Content Templates
-## Reusable Content Templates for Gutenberg like PowerPoint Slide Master
+# Gutenberg Block Layouts
+## Reusable Block Layouts for Gutenberg like PowerPoint Slide Master
 
 ## How to use
 
 1. Install the Plugin via Plugin Install Screen
-2. Create one or more Templates via the Templates Post Type
+2. Create one or more Layouts via the Layouts Post Type
 3. Create a new Post
-4. Open the Content Templates Sidebar via the Icon on the top Right or Options > Content Templates
+4. Open the Block Layouts Sidebar via the Icon on the top Right or Options > Block Layouts
 5. Choose a Template
 
 ## Development

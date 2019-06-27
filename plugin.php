@@ -2,24 +2,24 @@
 /**
  * Main plugin file
  *
- * @package     Derweili\Content_Templates
- * @author      Zac Gordon (@zgordon)
+ * @package     Derweili\Block_Layouts
+ * @author      derweili (@derweili)
  * @license     GPL2+
  *
  * @wordpress-plugin
- * Plugin Name: Content Templates
+ * Plugin Name: Block Layouts
  * Plugin URI:  https://derweili.de
- * Description: Content Templates for WordPress
+ * Description: Block Layouts for WordPress
  * Version:     1.0.0
  * Author:      Derweili
  * Author URI:  https://derweili.de
- * Text Domain: content-templates
+ * Text Domain: block-layouts
  * Domain Path: /languages
  * License:     GPL2+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace Derweili\Content_Templates;
+namespace Derweili\Block_Layouts;
 
 //  Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -62,7 +62,7 @@ function _get_plugin_url() {
  * @since 1.0.0
  */
 function load_textdomain() {
-	$return = load_plugin_textdomain( 'content-templates', false, basename( dirname( __FILE__ ) ) . '/languages' ); 
+	$return = load_plugin_textdomain( 'block-layouts', false, basename( dirname( __FILE__ ) ) . '/languages' ); 
 }
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\load_textdomain' );

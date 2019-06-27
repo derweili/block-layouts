@@ -19,7 +19,7 @@ import "./plugin.scss";
  * 
  */
 
-class ContentTemplatesSidebar extends React.Component {
+class BlockLayoutsSidebar extends React.Component {
 
     state = {
         templates : [], // available templates
@@ -29,18 +29,18 @@ class ContentTemplatesSidebar extends React.Component {
     };
 
     /**
-     * Load Available Templates
+     * Load Available Layouts
      */
     componentDidMount(){
 
-        apiRequest( { path: '/wp/v2/content-template' } ).then( posts => {
+        apiRequest( { path: '/wp/v2/block-layout' } ).then( posts => {
             this.onNewPosts( posts );
         } );
 
     }
 
     /**
-     * Receive Templates from REST API
+     * Receive Layouts from REST API
      * 
      * @param {array} posts Content Template Posts (REST)
      */
@@ -128,7 +128,7 @@ class ContentTemplatesSidebar extends React.Component {
     createTemplateSelectedNotice( template ){
         dispatch( 'core/notices' ).createNotice(
             'info',
-            template.title + ' ' + __('Template selected', 'content-templates'),
+            template.title + ' ' + __('Template selected', 'block-layouts'),
             {
                 isDismissible: true,
                 type: 'snackbar',
@@ -144,17 +144,17 @@ class ContentTemplatesSidebar extends React.Component {
     }
 
     /**
-     * Render "No Templates Found" Message
+     * Render "No Layouts Found" Message
      * 
      * The templatesAdminLink comes from wp_localize_script
      * 
      */
-    noTemplatesFound(){
+    noLayoutsFound(){
         return (
             <Fragment>
-                <h2>{__("No Templates Found", "content-templates")}</h2>
-                <p>{__("You don't have any Templates", "content-templates")}</p>
-                <a href={templatesAdminLink}>{__("Please create a new Template first.", "content-templates")}</a>
+                <h2>{__("No Layouts Found", "block-layouts")}</h2>
+                <p>{__("You don't have any Layouts", "block-layouts")}</p>
+                <a href={templatesAdminLink}>{__("Please create a new Template first.", "block-layouts")}</a>
             </Fragment>
         );
     }
@@ -165,16 +165,16 @@ class ContentTemplatesSidebar extends React.Component {
 
         return (
             <Fragment>
-                <PluginSidebarMoreMenuItem target="content-templates-sidebar">
-                    {__("Content Templates", "content-templates")}
+                <PluginSidebarMoreMenuItem target="block-layouts-sidebar">
+                    {__("Block Layouts", "block-layouts")}
                 </PluginSidebarMoreMenuItem>
                 <PluginSidebar
-                    name="content-templates-sidebar"
-                    title={__("Content Templates", "content-templates")}
+                    name="block-layouts-sidebar"
+                    title={__("Block Layouts", "block-layouts")}
                 >
-                    <PanelBody title={__("Select a Template", "content-templates")} opened>
+                    <PanelBody title={__("Select a Template", "block-layouts")} opened>
                         <PanelRow>
-                            <ul className="content-template-button-list">
+                            <ul className="block-layout-button-list">
                                 {
                                     templates.length > 0 ?
                                         templates.map(template => {
@@ -186,7 +186,7 @@ class ContentTemplatesSidebar extends React.Component {
                                                     </Button>
                                                 </li>           
                                             );
-                                        }) : this.noTemplatesFound()
+                                        }) : this.noLayoutsFound()
                                     
                                 }
                             </ul>
@@ -214,5 +214,5 @@ class ContentTemplatesSidebar extends React.Component {
 
 registerPlugin( "contenttemplates-sidebar", {
     icon: "layout",
-    render: ContentTemplatesSidebar
+    render: BlockLayoutsSidebar
 })

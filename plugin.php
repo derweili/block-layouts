@@ -8,7 +8,7 @@
  *
  * @wordpress-plugin
  * Plugin Name: Block Layouts
- * Plugin URI:  https://derweili.de
+ * Plugin URI:  https://github.com/derweili/block-layouts
  * Description: Block Layouts for WordPress
  * Version:     1.0.0
  * Author:      Derweili

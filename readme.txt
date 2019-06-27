@@ -1,7 +1,7 @@
 === Content Templates ===
 Contributors: derweili
 Tags: blocks, editor
-Donate link: https://derweili.de
+Donate link: https://github.com/derweili/block-layouts
 Requires at least: 5.2.0
 Tested up to: 5.2.2
 Requires PHP: 7.0

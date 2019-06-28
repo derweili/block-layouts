@@ -1,11 +1,11 @@
-=== Content Templates ===
+=== Block Layouts ===
 Contributors: derweili
 Tags: blocks, editor
 Donate link: https://github.com/derweili/block-layouts
 Requires at least: 5.2.0
 Tested up to: 5.2.2
 Requires PHP: 7.0
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPL2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,6 +13,8 @@ Create re-usable block layouts for your posts, pages and custom post types
 
 == Description ==
 Block layouts lets you create re usable block templates as you know  them from Power Point's "Master slides".
+
+https://youtu.be/vKgENOlRwFI
 
 == Installation ==
 1. Install the Plugin via Plugin Install Screen
@@ -33,5 +35,4 @@ It does work with all post types supporting Gutenberg.
 == Screenshots ==
 1. screenshot-1.png
 2. screenshot-2.png
-3. screenshot-3.png
 4. screenshot-4.png

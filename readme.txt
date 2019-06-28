@@ -5,14 +5,14 @@ Donate link: https://github.com/derweili/block-layouts
 Requires at least: 5.2.0
 Tested up to: 5.2.2
 Requires PHP: 7.0
-Stable tag: 1.0.2
+Stable tag: 1.0.4
 License: GPL2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Create re-usable block layout  for your posts
+Create re-usable block layouts for your posts, pages and custom post types
 
 == Description ==
-Block layouts lets you create re usable block templates as you know  them from Power Point\'s \"Master slides\".
+Block layouts lets you create re usable block templates as you know  them from Power Point's "Master slides".
 
 == Installation ==
 1. Install the Plugin via Plugin Install Screen
@@ -22,9 +22,13 @@ Block layouts lets you create re usable block templates as you know  them from P
 5. Choose a Template
 
 == Frequently Asked Questions ==
-Does it work with all kind of blocks?
+= Does it work with all kind of blocks? = 
 
 We testet it with a bunch of blocks and had no problems. If you do have any problems with individual blocks, let us know.
+
+= Does it work with all post types =
+
+It does work with all post types supporting Gutenberg.
 
 == Screenshots ==
 1. screenshot-1.png

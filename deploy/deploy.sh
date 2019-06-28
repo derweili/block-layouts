@@ -19,7 +19,7 @@ echo "Switch successfull"
 
 # 4. Move plugin-assets/ to SVN /assets/
 echo "Move plugin-assets/ to SVN /assets/"
-mv ./plugin-assets/ ../assets/
+mv ./plugin-assets/* ../assets/
 echo "Moving files successfull"
 
 # 5. Clean up unnecessary files

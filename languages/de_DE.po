@@ -12,22 +12,30 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: de\n"
 
-#: plugins/01-block-layouts-sidebar/index.js:123
+#: plugins/01-content-templates-sidebar/index.js:153
+msgid "Template selected"
+msgstr "Template ausgewählt"
+
+#: plugins/01-content-templates-sidebar/index.js:177
 msgid "No Layouts Found"
-msgstr "Es wurden keine Layouts gefunden."
+msgstr "Keine Layouts gefunden"
 
-#: plugins/01-block-layouts-sidebar/index.js:124
+#: plugins/01-content-templates-sidebar/index.js:178
 msgid "You don't have any Layouts"
-msgstr "Du hast bisher keine Layouts erstellt."
+msgstr "Es existsieren keine Layouts"
 
-#: plugins/01-block-layouts-sidebar/index.js:125
+#: plugins/01-content-templates-sidebar/index.js:179
 msgid "Please create a new Template first."
 msgstr "Bitte erstelle zuerst ein neues Template."
 
-#: plugins/01-block-layouts-sidebar/index.js:141
+#: plugins/01-content-templates-sidebar/index.js:198
 msgid "Block Layouts"
 msgstr "Block Layouts"
 
-#: plugins/01-block-layouts-sidebar/index.js:143
+#: plugins/01-content-templates-sidebar/index.js:200
 msgid "Select a Template"
-msgstr "Template auswählen"
+msgstr "Select a Template"
+
+#: plugins/01-content-templates-sidebar/index.js:262
+msgid "Start with an empty page"
+msgstr "Starte mit einer leeren Seite"

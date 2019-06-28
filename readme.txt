@@ -25,3 +25,9 @@ Block layouts lets you create re usable block templates as you know  them from P
 Does it work with all kind of blocks?
 
 We testet it with a bunch of blocks and had no problems. If you do have any problems with individual blocks, let us know.
+
+== Screenshots ==
+1. screenshot-1.png
+2. screenshot-2.png
+3. screenshot-3.png
+4. screenshot-4.png

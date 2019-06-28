@@ -3,22 +3,21 @@ const { Fragment } = wp.element;
 const { PanelBody, PanelRow, Button, Modal } = wp.components;
 const { registerPlugin } = wp.plugins;
 const { PluginSidebar, PluginSidebarMoreMenuItem } = wp.editPost;
-const { parse } = wp.blockSerializationDefaultParser;
 const { select, dispatch} = wp.data;
 const apiRequest = wp.apiRequest;
-const ajax= wp.ajax;
 
 
-const {createBlock, rawHandler} = wp.blocks;
+const {rawHandler} = wp.blocks;
 
 
 
 import "./plugin.scss";
 
 /**
+ * Block Layout Content
  * 
+ * Render Sidebar, Popup and Notices
  */
-
 class BlockLayoutsSidebar extends React.Component {
 
     state = {
@@ -26,17 +25,37 @@ class BlockLayoutsSidebar extends React.Component {
         selectedTemplate: null, // currently selected template
         isOpen: false, // is modal open
         templateBlocksContent: '', // save content after Template Select here to check if content was not changed
+        isInitialPopupOpen: false // stores if the initial popup (Select a Template) is open
     };
 
     /**
-     * Load Available Layouts
+     * Load Available Layouts and open initial Pupup
      */
     componentDidMount(){
 
+        // load available block layouts
         apiRequest( { path: '/wp/v2/block-layout' } ).then( posts => {
             this.onNewPosts( posts );
         } );
 
+        // check if is new post and open initial popup
+        const isNewPost = select("core/editor").isCleanNewPost();
+        if(isNewPost){
+            this.openInitialPopup();
+        }
+
+    }
+
+    /**
+     * Open the Initial "Choose a template" Popup
+     */
+    openInitialPopup(){
+
+        // don't show popup when creating new templates
+        const currentPostType = select("core/editor").getCurrentPostType();
+        if ( "block-layout" === currentPostType ) return;
+
+        this.setState({isInitialPopupOpen: true});
     }
 
     /**
@@ -61,8 +80,6 @@ class BlockLayoutsSidebar extends React.Component {
 
     }
 
-    onReloadEditor(){
-    }
 
     /**
      * Overwrite Blocks on Template Select
@@ -71,22 +88,16 @@ class BlockLayoutsSidebar extends React.Component {
      * @param {*} force Skip user consent modal
      */
     onSelectTemplate( template, force = false){
-        // const newBlockTemplate = parse(template.content);
-        // console.log('newBlockTemplate', newBlockTemplate);
 
         const isNewPost = select("core/editor").isCleanNewPost();
 
-        // show warning if 
+        // show warning if is not new post, not forces and not unchanged template
         if ( force || isNewPost || this.isUnchangedTemplate() ){
 
             // get an array of gutenberg blocks from raw HTML (parse blocks)
-            var gutblock = wp.blocks.rawHandler({ 
+            var gutblock = rawHandler({ 
                 HTML:  template.content,
             });
-
-            // re-serialize blocks
-            // var serelized = wp.blocks.serialize(gutblock);
-            // serelized = serelized;
 
             // delete all Blocks
             dispatch("core/editor").resetBlocks([]);
@@ -98,10 +109,8 @@ class BlockLayoutsSidebar extends React.Component {
             this.setState({isOpen:false, selectedTemplate: null})
             this.createTemplateSelectedNotice( template );
 
+            // save current post content so we can check later if we have an unchanged template
             this.saveInsertedTemplate();
-
-
-
 
         }else{
             this.setState({
@@ -111,12 +120,18 @@ class BlockLayoutsSidebar extends React.Component {
         }
     }
 
+    /**
+     * Saves current post content in state
+     */
     saveInsertedTemplate(){
         const blocks = select("core/editor").getBlocks();
         const templateBlocksContent = JSON.stringify(blocks);
         this.setState({templateBlocksContent});
     }
     
+    /**
+     * Compare current post content with post content in state
+     */
     isUnchangedTemplate(){
         const blocks = select("core/editor").getBlocks();
         const templateBlocksContent = JSON.stringify(blocks);
@@ -125,6 +140,11 @@ class BlockLayoutsSidebar extends React.Component {
         
     }
 
+    /**
+     * Dispatch new "Tempalte selected" Notice
+     * 
+     * @param {object} template 
+     */
     createTemplateSelectedNotice( template ){
         dispatch( 'core/notices' ).createNotice(
             'info',
@@ -159,9 +179,12 @@ class BlockLayoutsSidebar extends React.Component {
         );
     }
 
+    /**
+     * Render view
+     */
     render(){
 
-        const { templates, isOpen } = this.state;
+        const { templates, isOpen, isInitialPopupOpen } = this.state;
 
         return (
             <Fragment>
@@ -196,13 +219,45 @@ class BlockLayoutsSidebar extends React.Component {
                 {
                     isOpen && (
                         <Modal
-                            title="Overwrite Content"
+                            title={ __("Overwrite Content", "block-layouts") }
                             onRequestClose={ () => this.closeModal() }>
                             <p>
-                                Do you want to overwrite all Existing Content?
+                                { __("Do you want to overwrite all existing content?", "block-layouts") }
                             </p>
                             <Button isPrimary onClick={ () => { this.onSelectTemplate( this.state.selectedTemplate, true ) } } >
-                                Overwrite Content
+                                { __("Overwrite Content", "block-layouts") }
+                            </Button>
+                        </Modal>
+                    )
+                }
+                {
+                    isInitialPopupOpen && templates.length > 0 && (
+                        <Modal
+                            title="Choose a template"
+                            onRequestClose={ () => this.setState({isInitialPopupOpen: false}) }>
+                            <ul className="block-layout-button-list">
+                                {
+                                    templates.length > 0 ?
+                                        templates.map(template => {
+                                            return (
+                                                <li key={template.id}>
+                                                    <Button isDefault onClick={ () => { this.setState({isInitialPopupOpen: false}); this.onSelectTemplate(template) } } className="template-button">
+                                                        <img src={template.icon}  width="40"/>
+                                                        {template.title}
+                                                    </Button>
+                                                </li>           
+                                            );
+                                        }) : this.noLayoutsFound()
+                                    
+                                }
+                            </ul>
+                            <div style={{textAlign:'center', marginBottom:'10px'}}>
+                                <span>
+                                    { __("or", "block-layouts") }
+                                </span>
+                            </div>
+                            <Button isDefault style={{width:'100%', textAlign:'center', display:'block'}}   onClick={ () => { this.setState({isInitialPopupOpen: false}); } }>
+                                { __("Start with an empty page", "block-layouts") }
                             </Button>
                         </Modal>
                     )

@@ -33,15 +33,22 @@ class BlockLayoutsSidebar extends React.Component {
      */
     componentDidMount(){
 
-        // load available block layouts
-        apiRequest( { path: '/wp/v2/block-layout' } ).then( posts => {
+        // get current post type
+        const currentPostType = select('core/editor').getCurrentPostType();
+
+        // get block layouts from api for current post type
+        const path = '/wp/v2/block-layout?post_type=' + currentPostType;
+        apiRequest( { path  } ).then( posts => {
+            console.log('posts', posts);
             this.onNewPosts( posts );
         } );
 
-        // check if is new post and open initial popup
-        const isNewPost = select("core/editor").isCleanNewPost();
-        if(isNewPost){
-            this.openInitialPopup();
+        if( "block-layout" !==  currentPostType){ // don't show initial popup on new block layout screen
+            // check if is new post and open initial popup
+            const isNewPost = select("core/editor").isCleanNewPost();
+            if(isNewPost){
+                this.openInitialPopup();
+            }
         }
 
     }
@@ -52,9 +59,6 @@ class BlockLayoutsSidebar extends React.Component {
     openInitialPopup(){
 
         // don't show popup when creating new templates
-        const currentPostType = select("core/editor").getCurrentPostType();
-        if ( "block-layout" === currentPostType ) return;
-
         this.setState({isInitialPopupOpen: true});
     }
 

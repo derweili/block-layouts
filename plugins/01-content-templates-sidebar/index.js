@@ -3,13 +3,13 @@ const { Fragment } = wp.element;
 const { PanelBody, PanelRow, Button, Modal } = wp.components;
 const { registerPlugin } = wp.plugins;
 const { PluginSidebar, PluginSidebarMoreMenuItem } = wp.editPost;
-const { select, dispatch} = wp.data;
+const { select, dispatch, withSelect} = wp.data;
 const apiRequest = wp.apiRequest;
 
 
 const {rawHandler} = wp.blocks;
 
-
+const supportedPostTypes = derweiliBlockLayoutsSupportedPostTypes;
 
 import "./plugin.scss";
 
@@ -33,13 +33,14 @@ class BlockLayoutsSidebar extends React.Component {
      */
     componentDidMount(){
 
+        const { isNewPost } = this.props;
+
         // load available block layouts
         apiRequest( { path: '/wp/v2/block-layout' } ).then( posts => {
             this.onNewPosts( posts );
         } );
 
         // check if is new post and open initial popup
-        const isNewPost = select("core/editor").isCleanNewPost();
         if(isNewPost){
             this.openInitialPopup();
         }
@@ -51,9 +52,9 @@ class BlockLayoutsSidebar extends React.Component {
      */
     openInitialPopup(){
 
+        const { postType } = this.props;
         // don't show popup when creating new templates
-        const currentPostType = select("core/editor").getCurrentPostType();
-        if ( "block-layout" === currentPostType ) return;
+        if ( "block-layout" === postType ) return;
 
         this.setState({isInitialPopupOpen: true});
     }
@@ -89,7 +90,7 @@ class BlockLayoutsSidebar extends React.Component {
      */
     onSelectTemplate( template, force = false){
 
-        const isNewPost = select("core/editor").isCleanNewPost();
+        const { isNewPost } = this.props;
 
         // show warning if is not new post, not forces and not unchanged template
         if ( force || isNewPost || this.isUnchangedTemplate() ){
@@ -124,8 +125,8 @@ class BlockLayoutsSidebar extends React.Component {
      * Saves current post content in state
      */
     saveInsertedTemplate(){
-        const blocks = select("core/editor").getBlocks();
-        const templateBlocksContent = JSON.stringify(blocks);
+        const { blockInEditor } = this.props;
+        const templateBlocksContent = JSON.stringify(blockInEditor);
         this.setState({templateBlocksContent});
     }
     
@@ -133,8 +134,8 @@ class BlockLayoutsSidebar extends React.Component {
      * Compare current post content with post content in state
      */
     isUnchangedTemplate(){
-        const blocks = select("core/editor").getBlocks();
-        const templateBlocksContent = JSON.stringify(blocks);
+        const { blockInEditor } = this.props;
+        const templateBlocksContent = JSON.stringify(blockInEditor);
         
         return templateBlocksContent === this.state.templateBlocksContent;
         
@@ -185,6 +186,9 @@ class BlockLayoutsSidebar extends React.Component {
     render(){
 
         const { templates, isOpen, isInitialPopupOpen } = this.state;
+        const { postType } = this.props;
+        
+        if( ! supportedPostTypes.includes(postType) ) return null;
 
         return (
             <Fragment>
@@ -267,7 +271,17 @@ class BlockLayoutsSidebar extends React.Component {
     }
 }
 
+const BlockLayoutsSidebarWithSelect = withSelect( ( select, ownProps ) => {
+    const { isCleanNewPost, getCurrentPostType, getBlocks } = select("core/editor");
+ 
+    return {
+        isNewPost: isCleanNewPost(),
+        postType: getCurrentPostType(),
+        blockInEditor: getBlocks()
+    };
+} )( BlockLayoutsSidebar );
+
 registerPlugin( "contenttemplates-sidebar", {
     icon: "layout",
-    render: BlockLayoutsSidebar
+    render: BlockLayoutsSidebarWithSelect
 })

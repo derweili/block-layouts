@@ -32,6 +32,11 @@ We testet it with a bunch of blocks and had no problems. If you do have any prob
 
 It does work with all post types supporting Gutenberg.
 
+== Changelog ==
+= 20200214 1.1.0 =
+* `derweili_block_layouts_supported_post_types` filter added to restrict the block layout plugin to certain post types. (Default all post types)
+
+
 == Screenshots ==
 1. screenshot-1.png
 2. screenshot-2.png

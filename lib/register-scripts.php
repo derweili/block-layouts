@@ -42,26 +42,6 @@ function register_block_assets() {
 
 }
 
-
-// add_action("wp_enqueue_scripts", __NAMESPACE__ . '\frontend_assets' );
-/**
- * Enqueue block frontend JS & CSS
- */
-
-function frontend_assets(){
-
-	$frontend_js_path = "/assets/js/blocks.frontend.js";
-
-	wp_enqueue_script(
-		"jsforwp-adv-gb-frontnd-js",
-		_get_plugin_url() . $frontend_js_path,
-		['wp-element'],
-		filemtime( _get_plugin_directory() . $frontend_js_path ),
-		true
-	);
-
-}
-
 /**
  * Enqueue block frontend JS & CSS
  */
@@ -87,6 +67,27 @@ function plugin_assets(){
 		filemtime( _get_plugin_directory() . $plugin_css_path )
 	);
 
+	wp_localize_script( 'derweilicontenttemplates-plugin-js', 'derweiliBlockLayoutsSupportedPostTypes', get_supported_post_types() );
+
 }
 
 add_action("enqueue_block_editor_assets", __NAMESPACE__ . '\plugin_assets' );
+
+function get_supported_post_types() {
+	
+	$args = array(
+		'show_in_rest' => true // only query post types with REST-API support, because only those can have the block editor enabled
+	);
+
+	$supportedPostTypes = get_post_types( $args );
+
+	$supported_post_types_names = [];
+
+	foreach ($supportedPostTypes as $key => $value) {
+		$supported_post_types_names[] = $value;
+	}
+
+	$supported_post_types_names = apply_filters( 'derweili_block_layouts_supported_post_types', $supported_post_types_names );
+
+	return $supported_post_types_names;
+}

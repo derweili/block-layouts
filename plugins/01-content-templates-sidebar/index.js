@@ -1,6 +1,8 @@
+import TemplateSelectModal from './components/TemplateSelectModal'
+
 const { __ } = wp.i18n;
 const { Fragment } = wp.element;
-const { PanelBody, PanelRow, Button, Modal } = wp.components;
+const { PanelBody, PanelRow, Button, Modal, SelectControl } = wp.components;
 const { registerPlugin } = wp.plugins;
 const { PluginSidebar, PluginSidebarMoreMenuItem } = wp.editPost;
 const { select, dispatch, withSelect} = wp.data;
@@ -25,7 +27,8 @@ class BlockLayoutsSidebar extends React.Component {
         selectedTemplate: null, // currently selected template
         isOpen: false, // is modal open
         templateBlocksContent: '', // save content after Template Select here to check if content was not changed
-        isInitialPopupOpen: false // stores if the initial popup (Select a Template) is open
+        isInitialPopupOpen: false, // stores if the initial popup (Select a Template) is open
+        temporarilySelectdTemplate: null
     };
 
     /**
@@ -89,6 +92,12 @@ class BlockLayoutsSidebar extends React.Component {
      * @param {*} force Skip user consent modal
      */
     onSelectTemplate( template, force = false){
+        console.log('on select template', template)
+
+        if(template === null) {
+            this.setState({isInitialPopupOpen: false})
+            return
+        }
 
         const { isNewPost } = this.props;
 
@@ -185,11 +194,11 @@ class BlockLayoutsSidebar extends React.Component {
      */
     render(){
 
-        const { templates, isOpen, isInitialPopupOpen } = this.state;
+        const { templates, isOpen, isInitialPopupOpen, temporarilySelectdTemplate } = this.state;
         const { postType } = this.props;
         
         if( ! supportedPostTypes.includes(postType) ) return null;
-
+        console.log(templates)
         return (
             <Fragment>
                 <PluginSidebarMoreMenuItem target="block-layouts-sidebar">
@@ -236,34 +245,11 @@ class BlockLayoutsSidebar extends React.Component {
                 }
                 {
                     isInitialPopupOpen && templates.length > 0 && (
-                        <Modal
-                            title="Choose a template"
-                            onRequestClose={ () => this.setState({isInitialPopupOpen: false}) }>
-                            <ul className="block-layout-button-list">
-                                {
-                                    templates.length > 0 ?
-                                        templates.map(template => {
-                                            return (
-                                                <li key={template.id}>
-                                                    <Button isDefault onClick={ () => { this.setState({isInitialPopupOpen: false}); this.onSelectTemplate(template) } } className="template-button">
-                                                        <img src={template.icon}  width="40"/>
-                                                        {template.title}
-                                                    </Button>
-                                                </li>           
-                                            );
-                                        }) : this.noLayoutsFound()
-                                    
-                                }
-                            </ul>
-                            <div style={{textAlign:'center', marginBottom:'10px'}}>
-                                <span>
-                                    { __("or", "block-layouts") }
-                                </span>
-                            </div>
-                            <Button isDefault style={{width:'100%', textAlign:'center', display:'block'}}   onClick={ () => { this.setState({isInitialPopupOpen: false}); } }>
-                                { __("Start with an empty page", "block-layouts") }
-                            </Button>
-                        </Modal>
+                        <TemplateSelectModal 
+                            templates={templates}
+                            onSelectTemplate={(template) => {this.onSelectTemplate(template) }}
+                            onCloseModal={() => this.setState({isInitialPopupOpen: false})}
+                            />
                     )
                 }
             </Fragment>

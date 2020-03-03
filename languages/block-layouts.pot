@@ -3,42 +3,34 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "X-Generator: babel-plugin-makepot\n"
 
-#: plugins/01-content-templates-sidebar/index.js:152
+#: plugins/01-content-templates-sidebar/index.js:161
 msgid "Template selected"
 msgstr ""
 
-#: plugins/01-content-templates-sidebar/index.js:176
+#: plugins/01-content-templates-sidebar/index.js:185
 msgid "No Layouts Found"
 msgstr ""
 
-#: plugins/01-content-templates-sidebar/index.js:177
+#: plugins/01-content-templates-sidebar/index.js:186
 msgid "You don't have any Layouts"
 msgstr ""
 
-#: plugins/01-content-templates-sidebar/index.js:178
+#: plugins/01-content-templates-sidebar/index.js:187
 msgid "Please create a new Template first."
 msgstr ""
 
-#: plugins/01-content-templates-sidebar/index.js:200
+#: plugins/01-content-templates-sidebar/index.js:209
 msgid "Block Layouts"
 msgstr ""
 
-#: plugins/01-content-templates-sidebar/index.js:202
+#: plugins/01-content-templates-sidebar/index.js:211
 msgid "Select a Template"
 msgstr ""
 
-#: plugins/01-content-templates-sidebar/index.js:229
+#: plugins/01-content-templates-sidebar/index.js:238
 msgid "Do you want to overwrite all existing content?"
 msgstr ""
 
-#: plugins/01-content-templates-sidebar/index.js:232
+#: plugins/01-content-templates-sidebar/index.js:241
 msgid "Overwrite Content"
-msgstr ""
-
-#: plugins/01-content-templates-sidebar/index.js:260
-msgid "or"
-msgstr ""
-
-#: plugins/01-content-templates-sidebar/index.js:264
-msgid "Start with an empty page"
 msgstr ""
